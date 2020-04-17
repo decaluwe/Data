@@ -9,36 +9,38 @@ import os
 carb_area=(9**2)*np.pi #in mm^2
 carb_v =  carb_area*0.19 #in mm^3
 carb_den = 0.44*.001 #in g/mm^3
-porosity = 0.78 #percentage
+porosity = 0.78
 carb_m = carb_v*carb_den*(1. - porosity) 
 
 def graph(file):
-    D = pd.read_table(file, sep='deliminator', engine='python', header=None)
-    D.dropna(inplace = True)
-    D = D[0].str.split("\t", expand = True)
+    Data = pd.read_table(file, sep='deliminator', engine='python', header=None)
+    Data.dropna(inplace = True)
+    Data = Data[0].str.split("\t", expand = True)
 
-    d_row = list(D[1]).index('0') #This means we cut the data when the time is zero.  To look at full data, use d_row = list(D[0]).index('#') + 1
-    D = D.iloc[d_row : ,]
+    # This means we cut the data when the time is zero.  To look at full data, 
+    # use d_row = list(D[0]).index('#') + 1
+    d_row = list(D[1]).index('0') 
+    Data = Data.iloc[d_row : ,]
 
-    D[1] = D[1].astype(float)
-    D[2] = D[2].astype(float)
-    D[3] = D[3].astype(float)
-    
+    #---SCD NOTE: CAN YOU PLEASE DOCUMENT WHAT EACH OF THESE ARE?---#
+    Data[1] = Data[1].astype(float)
+    Data[2] = Data[2].astype(float)
+    Data[3] = Data[3].astype(float)
 
-
-    D['capacity'] = D[1] * abs(D[3])/carb_m*1000/3600 #convert to mAh/g
+    Data['capacity'] = Data[1] * abs(Data[3])/carb_m*1000/3600 #convert to mAh/g
     title = file.split("_cycle")
     title2 = title[1]
     
-    for cell in D[2]:
-        if cell > D.iloc[0,2]:
-            row = list(D[2]).index(cell)
-            newc=D.iloc[row:,2]
-            D['adjust']=newc
-            D['charge']=D['adjust'].shift(-1*row)
+    #---SCD NOTE: IN GENERAL, CAN YOU DOCUMENT THESE LINES? WHAT DO THEY DO?---#
+    for cell in Data[2]:
+        if cell > Data.iloc[0,2]:
+            row = list(Data[2]).index(cell)
+            newc=Data.iloc[row:,2]
+            Data['adjust']=newc
+            Data['charge']=Data['adjust'].shift(-1*row)
             break
    
-    D['discharge'] =D[2].where(D[2]<=D.iloc[0,2]) 
+    Data['discharge'] =Data[2].where(Data[2]<=Data.iloc[0,2]) 
             
 # =============================================================================
 #     if D.iloc[1,2] < 0:
@@ -58,19 +60,19 @@ def graph(file):
 # =============================================================================
         
     plt.figure(0)
-    plt.scatter(D['capacity'], D['charge'], marker='o', label = title2 +"charge")
-    plt.scatter(D['capacity'], D['discharge'], marker='o', label = title2 +"discharge")
+    plt.scatter(Data['capacity'], Data['charge'], marker='o', label = title2 +"charge")
+    plt.scatter(Data['capacity'], Data['discharge'], marker='o', label = title2 +"discharge")
     plt.xlabel('Capacity (mAh/g)', fontsize=12)
     plt.ylabel('voltage (V)', fontsize=12)
     plt.legend(framealpha=1, frameon=True);
     
     
-    D['Voltgap'] = D['charge'] -D['discharge']
+    Data['Voltgap'] = Data['charge'] -Data['discharge']
     
-    Voltgap = D.Voltgap.mean()
+    Voltgap = Data.Voltgap.mean()
     Voltgap2 = 5
     return [Voltgap, Voltgap2]
-    plt.scatter(D['capacity'], D['Voltgap'], marker='o', label = title2)
+    plt.scatter(Data['capacity'], Data['Voltgap'], marker='o', label = title2)
 #    plt.figure(1)
 #    plt.scatter(D[1], D[3], marker='o')
 #    plt.xlabel('time (s)', fontsize=12)
@@ -83,7 +85,7 @@ iform =[]
 V = []
 V2 = []
 
-for file in os.listdir('C:/Users/Amy LeBar/Documents/Data'):
+for file in os.listdir(path):
     if file.find('08012019') > -1:
         Voltgap =graph(path + "/"+ file)
         print(Voltgap)
