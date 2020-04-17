@@ -9,8 +9,8 @@ import os
 carb_area=(9**2)*np.pi #in mm^2
 carb_v =  carb_area*0.19 #in mm^3
 carb_den = 0.44*.001 #in g/mm^3
-carb_por = 0.78 #percentage
-carb_m=carb_v*carb_den*carb_por
+porosity = 0.78 #percentage
+carb_m = carb_v*carb_den*(1. - porosity) 
 
 def graph(file):
     D = pd.read_table(file, sep='deliminator', engine='python', header=None)
