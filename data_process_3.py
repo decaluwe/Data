@@ -78,7 +78,7 @@ def graph(file):
 #    plt.xlabel('time (s)', fontsize=12)
 #    plt.ylabel('current (A)', fontsize=12)
 
-path = 'C:/Users/Amy LeBar/Documents/Data'
+path = '/Users/decaluwe/OneDrive - Colorado School of Mines/CORES Research Group/Laboratory Resources/Gamry Data/Li-O2 Battery/08012019 - teflon no CB - repeat' #'C:/Users/Amy LeBar/Documents/Data'
 
 i=0
 iform =[]
@@ -86,13 +86,15 @@ V = []
 V2 = []
 
 for file in os.listdir(path):
-    if file.find('08012019') > -1:
-        Voltgap =graph(path + "/"+ file)
-        print(Voltgap)
-        V.append(Voltgap[0])
-        V2.append(Voltgap[1])
-        iform.append(i)
-        i=i+1
+    if file.find('cycle') > -1:
+        if file.find('EIS') < 0:
+            print(file)
+            Voltgap =graph(path + "/"+ file)
+            print(Voltgap)
+            V.append(Voltgap[0])
+            V2.append(Voltgap[1])
+            iform.append(i)
+            i=i+1
    
     
 Report = pd.DataFrame()  
@@ -101,3 +103,4 @@ Report['V2'] = V2
 plt.figure(1)
 plt.scatter(iform, Report['V1'], marker='o')
 
+plt.show()
