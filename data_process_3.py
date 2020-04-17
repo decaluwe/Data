@@ -19,7 +19,7 @@ def graph(file):
 
     # This means we cut the data when the time is zero.  To look at full data, 
     # use d_row = list(D[0]).index('#') + 1
-    d_row = list(D[1]).index('0') 
+    d_row = list(Data[1]).index('0') 
     Data = Data.iloc[d_row : ,]
 
     #---SCD NOTE: CAN YOU PLEASE DOCUMENT WHAT EACH OF THESE ARE?---#
